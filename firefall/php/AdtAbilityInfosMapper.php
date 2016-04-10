@@ -294,9 +294,9 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
         $sResponse .= 'local ABILITY_INFOS = {};' . self::EOL;
 
         foreach ($aInfos as $oAbility) {
-            if (1 > $oAbility->getAbilityIconId()) {
-                continue;
-            }
+            // if (1 > $oAbility->getAbilityIconId()) {
+            //     continue;
+            // }
 
             $sDur = (1 == $oAbility->getAbilityReportsDuration()) ? 'true' : 'false';
 

@@ -26,6 +26,7 @@ require_once dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'lib'
                                                 . DIRECTORY_SEPARATOR . 'Raisch.php';
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosMapper.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosModel.php';
 
 $oDatabase = new Database('sqlite:ff_adt.sqlite3', null, null);
 $oLogger   = new Logger(__DIR__ . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'AdtAbilityInfos_exception_log.' . date('Y\_W', time()) . '.txt');
@@ -36,6 +37,8 @@ try {
 
     switch ($sHandle) {
         case 'json':
+            header('Content-type: application/json; charset=utf-8');
+
             $sRawData = file_get_contents("php://input");
             $aRawData = json_decode($sRawData, true);
             $bCheck   = isset(
@@ -47,10 +50,19 @@ try {
             );
 
             if ($bCheck and 5 === count($aRawData)) {
-                $oAdtAbilityInfos->insertAbilityInfos($aRawData);
-            }
+                $oAdtAbilityInfos->insert(new AdtAbilityInfosModel($aRawData));
 
-            print '{}';
+                print '{}';
+            } else {
+                $aAbilities = $oAdtAbilityInfos->fetchAll();
+                $sJson      = '';
+
+                foreach ($aAbilities as $oAbility) {
+                    $sJson .= $oAbility->getJson() . ',';
+                }
+
+                print '[' . substr($sJson, 0, -1) . ']';
+            }
             break;
 
         case 'html':
@@ -67,7 +79,7 @@ try {
             print '{}';
     }
 } catch (Exception $oEx) {
-    $this->oLogger->log(print_r($oEx, true));
+    $oLogger->log(print_r($oEx, true));
 
     print '{}';
 }

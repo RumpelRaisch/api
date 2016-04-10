@@ -79,7 +79,19 @@ final class AdtAbilityInfosModel extends Model
     /* [object methods]
     ========================================================================= */
 
-    // none yet
+    public function getJson()
+    {
+        return json_encode(
+            array(
+                'id'                       => $this->iId,
+                'ability_id'               => $this->iAbilityId,
+                'ability_icon_id'          => $this->iAbilityIconId,
+                'ability_name'             => $this->sAbilityName,
+                'ability_event'            => $this->sAbilityEvent,
+                'ability_reports_duration' => $this->iAbilityReportsDuration
+            )
+        );
+    }
 
     /* [Getter and Setter]
     ========================================================================= */
