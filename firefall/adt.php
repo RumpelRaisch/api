@@ -66,6 +66,10 @@ try {
             break;
 
         case 'html':
+            if (true === isset($_GET['order'])) {
+                $oAdtAbilityInfos->setOrder(array('id' => 'ASC'));
+            }
+
             $aAbilities = $oAdtAbilityInfos->fetchAll();
 
             include __DIR__ . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'table.php';

@@ -58,6 +58,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
 
     private $oDatabase = null;
     private $oLogger   = null;
+    private $aOrder    = null;
 
     /* [object properties]
     ========================================================================= */
@@ -77,6 +78,8 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
      */
     public function __construct(Database $oDatabase = null)
     {
+        $this->setOrderDefault();
+
         if (null !== $oDatabase) {
             $this->injectDatabase($oDatabase);
         }
@@ -217,6 +220,18 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
     public function fetchAll()
     {
         try {
+            $sOrder = ', ';
+
+            foreach ($this->getOrder() as $sKey => $sVal) {
+                if (', ' === $sOrder) {
+                    $sOrder = 'ORDER BY ';
+                }
+
+                $sOrder .= $sKey . ' ' . $sVal . ', ';
+            }
+
+            $sOrder = substr($sOrder, 0, -2);
+
             $oPrep = $this->oDatabase->prepare(
                 "SELECT
                     id,
@@ -227,9 +242,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
                     ability_reports_duration
                 FROM
                     ability_infos
-                ORDER BY
-                    ability_name ASC,
-                    ability_event ASC
+                {$sOrder}
                 ;"
             );
 
@@ -306,6 +319,16 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
         return $sResponse;
     }
 
+    public function setOrderDefault()
+    {
+        $this->setOrder(
+            array(
+                'ability_name'  => 'ASC',
+                'ability_event' => 'ASC'
+            )
+        );
+    }
+
     /* [Getter and Setter]
     ========================================================================= */
 
@@ -325,6 +348,18 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
     public function getDatabase()
     {
         return $this->oDatabase;
+    }
+
+    public function getOrder()
+    {
+        return $this->aOrder;
+    }
+
+    public function setOrder(array $aOrder)
+    {
+        $this->aOrder = $aOrder;
+
+        return $this;
     }
 
     /* [Dependency Injection - (Setter Injection)]
