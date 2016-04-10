@@ -25,6 +25,11 @@
       <div class="row">
         <div class="col-md-12">
           <div class="well">
+            <?php if (true === isset($aAbilities) AND true === is_array($aAbilities)): ?>
+            <div class="alert alert-success">
+              <p class="lead text-center"><?php print count($aAbilities); ?> abilities collected so far</p>
+            </div>
+            <?php endif; ?>
             <table class="table table-striped table-condensed table-hover">
               <thead>
                 <tr class="info">
@@ -36,7 +41,7 @@
                 </tr>
               </thead>
               <tbody>
-                <?php if (true === isset($aAbilities)): ?>
+                <?php if (true === isset($aAbilities) AND true === is_array($aAbilities)): ?>
                 <?php foreach ($aAbilities as $oAbility): ?>
                 <?php if ($oAbility instanceof AdtAbilityInfosModel): ?>
                 <tr>
