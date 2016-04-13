@@ -15,20 +15,24 @@ header('Pragma: no-cache');
 header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
 $sHandle = null;
+$sDir    = dirname(dirname(dirname(__DIR__)));
 
 if (true === isset($_GET['handle'])) {
     $sHandle = $_GET['handle'];
 }
 
 // see: https://github.com/RumpelRaisch/Raisch.git
-require_once dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR . 'lib'
-                                                . DIRECTORY_SEPARATOR . 'Raisch'
-                                                . DIRECTORY_SEPARATOR . 'Raisch.php';
+require_once $sDir . DIRECTORY_SEPARATOR . 'lib'
+                   . DIRECTORY_SEPARATOR . 'Raisch'
+                   . DIRECTORY_SEPARATOR . 'Raisch.php';
+
+require_once $sDir . DIRECTORY_SEPARATOR . 'configs'
+                   . DIRECTORY_SEPARATOR . 'api-firefall-adt.conf.php';
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosMapper.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosModel.php';
 
-$oDatabase = new Database('sqlite:ff_adt.sqlite3', null, null);
+$oDatabase = new Database(SQL_DNS, SQL_USER, SQL_PASSWORD);
 $oLogger   = new Logger(__DIR__ . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'AdtAbilityInfos_exception_log.' . date('Y\_W', time()) . '.txt');
 
 try {

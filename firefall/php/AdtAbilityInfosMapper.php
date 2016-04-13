@@ -111,7 +111,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
         try {
             $oPrep = $this->oDatabase->prepare(
                 "INSERT INTO
-                    ability_infos
+                    api_firefall_adt_ability_infos
                     (
                         ability_id,
                         ability_icon_id,
@@ -171,7 +171,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
                 "SELECT
                     COUNT(id) as count
                 FROM
-                    ability_infos
+                    api_firefall_adt_ability_infos
                 WHERE
                     ability_id               = :ability_id
                 AND
@@ -241,7 +241,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
                     ability_event,
                     ability_reports_duration
                 FROM
-                    ability_infos
+                    api_firefall_adt_ability_infos
                 {$sOrder}
                 ;"
             );
@@ -278,14 +278,16 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
     {
         try {
             $this->oDatabase->exec(
-                "CREATE TABLE IF NOT EXISTS ability_infos(
-                    id INTEGER PRIMARY KEY ASC,
-                    ability_id INTEGER,
-                    ability_icon_id INTEGER,
-                    ability_name TEXT,
-                    ability_event TEXT,
-                    ability_reports_duration INTEGER
-                )"
+                "CREATE TABLE IF NOT EXISTS `api_firefall_adt_ability_infos` (
+                    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                    `ability_id` int(11) NOT NULL,
+                    `ability_icon_id` int(11) NOT NULL,
+                    `ability_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+                    `ability_event` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+                    `ability_reports_duration` tinyint(1) NOT NULL DEFAULT '0',
+                    `ability_send_to_addon` tinyint(1) NOT NULL DEFAULT '1',
+                    PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
             );
         } catch (Exception $oEx) {
             if (true === $this->isInjectedILogger()) {
