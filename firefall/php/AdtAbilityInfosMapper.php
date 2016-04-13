@@ -59,6 +59,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
     private $oDatabase = null;
     private $oLogger   = null;
     private $aOrder    = null;
+    private $aWhere    = array();
 
     /* [object properties]
     ========================================================================= */
@@ -131,8 +132,8 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
             );
 
             $aExec                             = array();
-            $aExec['ability_id']               = $oModel->getAbilityID();
-            $aExec['ability_icon_id']          = $oModel->getAbilityIconID();
+            $aExec['ability_id']               = $oModel->getAbilityId();
+            $aExec['ability_icon_id']          = $oModel->getAbilityIconId();
             $aExec['ability_name']             = $oModel->getAbilityName();
             $aExec['ability_event']            = $oModel->getAbilityEvent();
             $aExec['ability_reports_duration'] = $oModel->getAbilityReportsDuration();
@@ -151,12 +152,59 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
         return $this;
     }
 
-    public function update(IModel $oModel){}
+    public function update(IModel $oModel)
+    {
+        try {
+            if (false === ($oModel instanceof AdtAbilityInfosModel)) {
+                throw new InvalidArgumentException('Argument 1 needs to be an instance of AdtAbilityInfosModel.');
+            }
+
+            $oPrep = $this->oDatabase->prepare(
+                "UPDATE
+                        api_firefall_adt_ability_infos
+                    SET
+                        ability_id               = :ability_id,
+                        ability_icon_id          = :ability_icon_id,
+                        ability_name             = :ability_name,
+                        ability_event            = :ability_event,
+                        ability_reports_duration = :ability_reports_duration,
+                        ability_used_by_addon    = :ability_used_by_addon
+                WHERE
+                        id = :id
+                ;"
+            );
+
+            $aExec                             = array();
+            $aExec['ability_id']               = $oModel->getAbilityId();
+            $aExec['ability_icon_id']          = $oModel->getAbilityIconId();
+            $aExec['ability_name']             = $oModel->getAbilityName();
+            $aExec['ability_event']            = $oModel->getAbilityEvent();
+            $aExec['ability_reports_duration'] = $oModel->getAbilityReportsDuration();
+            $aExec['ability_used_by_addon']    = $oModel->getAbilityUsedByAddon();
+            $aExec['id']                       = $oModel->getId();
+
+            if (false === $oPrep
+                OR false === $oPrep->execute($aExec)
+            ) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception $oEx) {
+            if (true === $this->isInjectedILogger()) {
+                $this->oLogger->log(print_r($oEx, true));
+            } else {
+                throw $oEx;
+            }
+        }
+
+        return null;
+    }
 
     public function delete($iId){}
 
     /**
-     * @access private
+     * @access public
      * @param  object    $oModel instance of AdtAbilityInfosModel
      * @return bool|null
      */
@@ -169,25 +217,25 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
 
             $oPrep = $this->oDatabase->prepare(
                 "SELECT
-                    COUNT(id) as count
-                FROM
-                    api_firefall_adt_ability_infos
+                        COUNT(id) as count
+                    FROM
+                        api_firefall_adt_ability_infos
                 WHERE
-                    ability_id               = :ability_id
-                AND
-                    ability_icon_id          = :ability_icon_id
-                AND
-                    ability_name             = :ability_name
-                AND
-                    ability_event            = :ability_event
-                AND
-                    ability_reports_duration = :ability_reports_duration
+                        ability_id               = :ability_id
+                    AND
+                        ability_icon_id          = :ability_icon_id
+                    AND
+                        ability_name             = :ability_name
+                    AND
+                        ability_event            = :ability_event
+                    AND
+                        ability_reports_duration = :ability_reports_duration
                 ;"
             );
 
             $aExec                             = array();
-            $aExec['ability_id']               = $oModel->getAbilityID();
-            $aExec['ability_icon_id']          = $oModel->getAbilityIconID();
+            $aExec['ability_id']               = $oModel->getAbilityId();
+            $aExec['ability_icon_id']          = $oModel->getAbilityIconId();
             $aExec['ability_name']             = $oModel->getAbilityName();
             $aExec['ability_event']            = $oModel->getAbilityEvent();
             $aExec['ability_reports_duration'] = $oModel->getAbilityReportsDuration();
@@ -211,11 +259,56 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
         return null;
     }
 
-    public function fetch($iId){}
+    /**
+     * @access public
+     * @return object AdtAbilityInfosModel
+     */
+    public function fetch($iId)
+    {
+        $oModel = new AdtAbilityInfosModel();
+
+        try {
+            $oPrep = $this->oDatabase->prepare(
+                "SELECT
+                        id,
+                        ability_id,
+                        ability_icon_id,
+                        ability_name,
+                        ability_event,
+                        ability_reports_duration,
+                        ability_used_by_addon
+                    FROM
+                        api_firefall_adt_ability_infos
+                WHERE
+                        id = :id
+                ;"
+            );
+
+            if (false === $oPrep
+                OR false === $oPrep->execute(array('id' => $iId))
+            ) {
+                return $oModel;
+            }
+
+            if (false !== ($aRow = $oPrep->fetch())) {
+                $oModel->setData($aRow);
+            }
+
+            return $oModel;
+        } catch (Exception $oEx) {
+            if (true === $this->isInjectedILogger()) {
+                $this->oLogger->log(print_r($oEx, true));
+            } else {
+                throw $oEx;
+            }
+        }
+
+        return $oModel;
+    }
 
     /**
-     * @access private
-     * @return array   array of AdtAbilityInfosModel's
+     * @access public
+     * @return array  array of AdtAbilityInfosModel's
      */
     public function fetchAll()
     {
@@ -239,12 +332,16 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
                     ability_icon_id,
                     ability_name,
                     ability_event,
-                    ability_reports_duration
+                    ability_reports_duration,
+                    ability_used_by_addon
                 FROM
                     api_firefall_adt_ability_infos
+                {$this->getWhereString()}
                 {$sOrder}
                 ;"
             );
+
+            $this->resetWhere();
 
             if (false === $oPrep
                 OR false === $oPrep->execute()
@@ -285,7 +382,7 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
                     `ability_name` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
                     `ability_event` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
                     `ability_reports_duration` tinyint(1) NOT NULL DEFAULT '0',
-                    `ability_send_to_addon` tinyint(1) NOT NULL DEFAULT '1',
+                    `ability_used_by_addon` tinyint(1) NOT NULL DEFAULT '1',
                     PRIMARY KEY (`id`)
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
             );
@@ -329,6 +426,37 @@ final class AdtAbilityInfosMapper implements IModelMapper, IHasDatabase, IHasLog
                 'ability_event' => 'ASC'
             )
         );
+    }
+
+    public function addWhere(array $aWhere)
+    {
+        $this->aWhere[] = $aWhere;
+
+        return $this;
+    }
+
+    private function resetWhere()
+    {
+        $this->aWhere = array();
+    }
+
+    private function getWhereString()
+    {
+        $sWhere = '';
+
+        if (true === is_array($this->aWhere)) {
+            foreach ($this->aWhere as $aWhere) {
+                if ('' === $sWhere) {
+                    $sWhere = 'WHERE ';
+                } else {
+                    $sWhere = ' AND ';
+                }
+
+                $sWhere .= $aWhere[0] . ' ' . $aWhere[1] . ' ' . $aWhere[2];
+            }
+        }
+
+        return $sWhere;
     }
 
     /* [Getter and Setter]

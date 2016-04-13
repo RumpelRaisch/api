@@ -33,11 +33,11 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtA
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosModel.php';
 
 $oDatabase = new Database(SQL_DNS, SQL_USER, SQL_PASSWORD);
-$oLogger   = new Logger(__DIR__ . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'AdtAbilityInfos_exception_log.' . date('Y\_W', time()) . '.txt');
+$oLogger   = new Logger(__DIR__ . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'adt.' . date('Y\_W', time()) . '.txt');
 
 try {
-    $oAdtAbilityInfos = new AdtAbilityInfosMapper($oDatabase);
-    $oAdtAbilityInfos->injectILogger($oLogger);
+    $oAbilityMapper = new AdtAbilityInfosMapper($oDatabase);
+    $oAbilityMapper->injectILogger($oLogger);
 
     switch ($sHandle) {
         case 'json':
@@ -54,11 +54,15 @@ try {
             );
 
             if ($bCheck and 5 === count($aRawData)) {
-                $oAdtAbilityInfos->insert(new AdtAbilityInfosModel($aRawData));
+                $oAbilityMapper->insert(new AdtAbilityInfosModel($aRawData));
 
                 print '{}';
             } else {
-                $aAbilities = $oAdtAbilityInfos->fetchAll();
+                if (true === isset($_GET['addon'])) {
+                    $oAbilityMapper->addWhere(array('ability_used_by_addon', '=', '1'));
+                }
+
+                $aAbilities = $oAbilityMapper->fetchAll();
                 $sJson      = '';
 
                 foreach ($aAbilities as $oAbility) {
@@ -71,16 +75,16 @@ try {
 
         case 'html':
             if (true === isset($_GET['order'])) {
-                $oAdtAbilityInfos->setOrder(array('id' => 'ASC'));
+                $oAbilityMapper->setOrder(array('id' => 'ASC'));
             }
 
-            $aAbilities = $oAdtAbilityInfos->fetchAll();
+            $aAbilities = $oAbilityMapper->fetchAll();
 
             include __DIR__ . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'table.php';
             break;
 
         case 'lua':
-            Debug::getInstance()->echoPrintRInPre($oAdtAbilityInfos->getLuaAbilityInfos());
+            Debug::getInstance()->echoPrintRInPre($oAbilityMapper->getLuaAbilityInfos());
             break;
 
         default:

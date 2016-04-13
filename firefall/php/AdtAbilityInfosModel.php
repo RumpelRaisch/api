@@ -55,6 +55,7 @@ final class AdtAbilityInfosModel extends Model
     private $sAbilityName            = '';
     private $sAbilityEvent           = '';
     private $iAbilityReportsDuration = 0;
+    private $iAbilityUsedByAddon     = 0;
 
     /* [object properties]
     ========================================================================= */
@@ -88,7 +89,8 @@ final class AdtAbilityInfosModel extends Model
                 'ability_icon_id'          => $this->iAbilityIconId,
                 'ability_name'             => $this->sAbilityName,
                 'ability_event'            => $this->sAbilityEvent,
-                'ability_reports_duration' => $this->iAbilityReportsDuration
+                'ability_reports_duration' => $this->iAbilityReportsDuration,
+                'ability_used_by_addon'    => $this->iAbilityUsedByAddon
             )
         );
     }
@@ -164,6 +166,18 @@ final class AdtAbilityInfosModel extends Model
     public function setAbilityReportsDuration($iAbilityReportsDuration)
     {
         $this->iAbilityReportsDuration = $iAbilityReportsDuration;
+
+        return $this;
+    }
+
+    public function getAbilityUsedByAddon()
+    {
+        return $this->iAbilityUsedByAddon;
+    }
+
+    public function setAbilityUsedByAddon($iAbilityUsedByAddon)
+    {
+        $this->iAbilityUsedByAddon = $iAbilityUsedByAddon;
 
         return $this;
     }

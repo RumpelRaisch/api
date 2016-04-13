@@ -38,6 +38,7 @@
                   <th class="text-center">Name</th>
                   <th class="text-center">Event</th>
                   <th class="text-center">Reports Duration</th>
+                  <th class="text-center">Used by Addon</th>
                 </tr>
               </thead>
               <tbody>
@@ -45,28 +46,51 @@
                 <?php foreach ($aAbilities as $oAbility): ?>
                 <?php if ($oAbility instanceof AdtAbilityInfosModel): ?>
                 <tr>
-                  <td class="text-right"><?php print $oAbility->getAbilityId(); ?></td>
                   <td class="text-right">
-                  <?php if (1 > $oAbility->getAbilityIconId()): ?>
-                  <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
-                  <?php else: ?>
-                  <?php print $oAbility->getAbilityIconId(); ?>
-                  <?php endif; ?>
+                    <?php print $oAbility->getAbilityId(); ?>
                   </td>
-                  <td class="text-left"><?php print trim($oAbility->getAbilityName()); ?></td>
-                  <td class="text-left"><?php print $oAbility->getAbilityEvent(); ?></td>
+                  <td class="text-right">
+                    <?php if (1 > $oAbility->getAbilityIconId()): ?>
+                    <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+                    <?php else: ?>
+                    <?php print $oAbility->getAbilityIconId(); ?>
+                    <?php endif; ?>
+                  </td>
+                  <td class="text-left">
+                    <?php print trim($oAbility->getAbilityName()); ?>
+                  </td>
+                  <td class="text-left">
+                    <?php print $oAbility->getAbilityEvent(); ?>
+                  </td>
                   <td class="text-center">
-                  <?php if (1 == $oAbility->getAbilityReportsDuration()): ?>
-                  <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-                  <?php else: ?>
-                  <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
-                  <?php endif; ?>
+                    <?php if (1 == $oAbility->getAbilityReportsDuration()): ?>
+                    <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+                    <?php else: ?>
+                    <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+                    <?php endif; ?>
+                  </td>
+                  <td class="text-center">
+                    <?php if (1 == $oAbility->getAbilityUsedByAddon()): ?>
+                    <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+                    <?php else: ?>
+                    <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+                    <?php endif; ?>
                   </td>
                 </tr>
                 <?php endif; ?>
                 <?php endforeach; ?>
                 <?php endif; ?>
               </tbody>
+              <tfoot>
+                <tr class="info">
+                  <th class="text-center">ID</th>
+                  <th class="text-center">Icon</th>
+                  <th class="text-center">Name</th>
+                  <th class="text-center">Event</th>
+                  <th class="text-center">Reports Duration</th>
+                  <th class="text-center">Used by Addon</th>
+                </tr>
+              </tfoot>
             </table>
           </div> <!-- /.well -->
         </div> <!-- /.col-md-12 -->
