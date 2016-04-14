@@ -31,9 +31,15 @@ require_once $sDir . DIRECTORY_SEPARATOR . 'configs'
 
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosMapper.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtAbilityInfosModel.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'AdtRoute.php';
 
 $oDatabase = new Database(SQL_DNS, SQL_USER, SQL_PASSWORD);
 $oLogger   = new Logger(__DIR__ . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR . 'adt.' . date('Y\_W', time()) . '.txt');
+$oRoute    = new AdtRoute();
+
+if (true === isset($_GET['route'])) {
+    $oRoute->set($_GET['route']);
+}
 
 try {
     $oAbilityMapper = new AdtAbilityInfosMapper($oDatabase);
@@ -58,7 +64,7 @@ try {
 
                 print '{}';
             } else {
-                if (true === isset($_GET['addon'])) {
+                if (true === $oRoute->exists('addon')) {
                     $oAbilityMapper->addWhere(array('ability_used_by_addon', '=', '1'));
                 }
 
@@ -74,7 +80,7 @@ try {
             break;
 
         case 'html':
-            if (true === isset($_GET['order'])) {
+            if (true === $oRoute->exists('order')) {
                 $oAbilityMapper->setOrder(array('id' => 'ASC'));
             }
 
@@ -85,6 +91,16 @@ try {
 
         case 'lua':
             Debug::getInstance()->echoPrintRInPre($oAbilityMapper->getLuaAbilityInfos());
+            break;
+
+        case 'test':
+            $aRoute = array();
+
+            while (false !== $oRoute->next()) {
+                $aRoute[] = $oRoute->current();
+            }
+
+            Debug::getInstance()->echoPrintRInPre($aRoute);
             break;
 
         default:

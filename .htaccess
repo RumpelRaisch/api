@@ -8,5 +8,5 @@
     # RewriteCond %{REQUEST_FILENAME} !-f
     # RewriteCond %{REQUEST_FILENAME} !-d
 
-    RewriteRule ^firefall\.adt\.(json|html|lua)/?$ firefall/adt.php?handle=$1 [QSA,L]
+    RewriteRule ^firefall\.adt\.([a-z]+)((?:/[a-z]+)*)/?$ firefall/adt.php?handle=$1&route=$2 [L]
 </IfModule>

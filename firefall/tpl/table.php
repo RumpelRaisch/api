@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="">
+
+    <!--[if IE]><link rel="shortcut icon" href="http://php.bitshifting.de/favicon.ico"><![endif]-->
+    <link rel="icon" href="http://php.bitshifting.de/favicon.ico">
 
     <title>FireFall - Ability Duration Timer - Ability Infos</title>
 
-    <link href="./firefall/css/bootstrap.darkly.min.css" rel="stylesheet">
+    <link href="http://php.bitshifting.de/api/firefall/css/bootstrap.darkly.min.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -97,6 +99,6 @@
       </div> <!-- /.row -->
     </div> <!-- /.container -->
 
-    <script src="./firefall/js/bootstrap.min.js"></script>
+    <script src="http://php.bitshifting.de/api/firefall/js/bootstrap.min.js"></script>
   </body>
 </html>
