@@ -49,7 +49,7 @@ try {
         case 'json':
             header('Content-type: application/json; charset=utf-8');
 
-            $sRawData = file_get_contents("php://input");
+            $sRawData = file_get_contents('php://input');
             $aRawData = json_decode($sRawData, true);
             $bCheck   = isset(
                 $aRawData['ability_id'],
